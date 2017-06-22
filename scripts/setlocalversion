@@ -99,7 +99,7 @@ scm_version()
 			# again using exactly 12 hex chars.
 			else
 				head="$(echo $head | cut -c1-8)"
-				printf '%s%s' -@ $head
+				printf '%s%s'
 			fi
 		fi
 
@@ -128,9 +128,9 @@ scm_version()
 
 		# Are there uncommitted changes?
 		# These are represented by + after the changeset id.
-		case "$hgid" in
-			*+|*+\ *) printf '%s' -dirty ;;
-		esac
+		#case "$hgid" in
+		#	*+|*+\ *) printf '%s' -dirty ;;
+		#esac
 
 		# All done with mercurial
 		return
