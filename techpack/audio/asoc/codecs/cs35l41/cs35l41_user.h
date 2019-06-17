@@ -87,5 +87,7 @@ struct cs35l41_private {
 void cs35l41_ssr_recovery(struct device *dev, void *data);
 int cs35l41_probe(struct cs35l41_private *cs35l41,
 				struct cs35l41_platform_data *pdata);
+int cs35l41_remove(struct cs35l41_private *cs35l41);
 int spk_id_get(struct device_node *np);
+
 #endif /* __CS35L41_H */
