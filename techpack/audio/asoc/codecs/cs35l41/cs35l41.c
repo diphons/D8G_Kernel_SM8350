@@ -1937,7 +1937,7 @@ static int cs35l41_component_probe(struct snd_soc_component *component)
 		snd_soc_component_get_drvdata(component);
         struct snd_soc_dapm_context *dapm =
                 snd_soc_component_get_dapm(component);
-	struct classh_cfg *classh = &cs35l41->pdata.classh_config;
+	struct cs35l41_classh_cfg *classh = &cs35l41->pdata.classh_config;
 	struct snd_kcontrol_new	*kcontrol;
 	int ret;
 
@@ -2141,8 +2141,8 @@ exit:
 
 static int cs35l41_irq_gpio_config(struct cs35l41_private *cs35l41)
 {
-	struct irq_cfg *irq_gpio_cfg1 = &cs35l41->pdata.irq_config1;
-	struct irq_cfg *irq_gpio_cfg2 = &cs35l41->pdata.irq_config2;
+	struct cs35l41_irq_cfg *irq_gpio_cfg1 = &cs35l41->pdata.irq_config1;
+	struct cs35l41_irq_cfg *irq_gpio_cfg2 = &cs35l41->pdata.irq_config2;
 	int irq_pol = IRQF_TRIGGER_NONE;
 
 	if (irq_gpio_cfg1->is_present) {
@@ -2265,9 +2265,9 @@ static int cs35l41_handle_of_data(struct device *dev,
 	int ret;
 	size_t	num_fast_switch;
 	struct device_node *sub_node;
-	struct classh_cfg *classh_config = &pdata->classh_config;
-	struct irq_cfg *irq_gpio1_config = &pdata->irq_config1;
-	struct irq_cfg *irq_gpio2_config = &pdata->irq_config2;
+	struct cs35l41_classh_cfg *classh_config = &pdata->classh_config;
+	struct cs35l41_irq_cfg *irq_gpio1_config = &pdata->irq_config1;
+	struct cs35l41_irq_cfg *irq_gpio2_config = &pdata->irq_config2;
 	unsigned int i;
 	u32 is_dev_mars = 0;
 
