@@ -806,7 +806,6 @@ KBUILD_CFLAGS += -Wno-tautological-compare
 # Quiet clang warning: truncation from 'int' to bit-field changes value from 1 to -1
 KBUILD_CFLAGS += -Wno-bitfield-constant-conversion
 KBUILD_CFLAGS += $(call cc-disable-warning, undefined-optimized)
-KBUILD_CFLAGS += -fno-builtin
 else
 
 # Warn about unmarked fall-throughs in switch statement.
