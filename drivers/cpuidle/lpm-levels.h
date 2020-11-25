@@ -10,19 +10,6 @@
 #include <soc/qcom/pm.h>
 
 #define NR_LPM_LEVELS 8
-#define MAXSAMPLES 5
-#define CLUST_SMPL_INVLD_TIME 40000
-#define DEFAULT_PREMATURE_CNT 3
-#define DEFAULT_STDDEV 100
-#define DEFAULT_IPI_STDDEV 400
-#define DEFAULT_TIMER_ADD 100
-#define DEFAULT_IPI_TIMER_ADD 900
-#define TIMER_ADD_LOW 100
-#define TIMER_ADD_HIGH 1500
-#define STDDEV_LOW 100
-#define STDDEV_HIGH 1000
-#define PREMATURE_CNT_LOW 1
-#define PREMATURE_CNT_HIGH 5
 
 /* RIMPS registers */
 #define TIMER_CTRL		0x0
@@ -59,13 +46,8 @@ struct lpm_cpu {
 	const char *domain_name;
 	unsigned int psci_mode_shift;
 	unsigned int psci_mode_mask;
-	uint32_t ref_stddev;
-	uint32_t ref_premature_cnt;
-	uint32_t tmr_add;
-	bool lpm_prediction;
 	void __iomem *rimps_tmr_base;
 	spinlock_t cpu_lock;
-	bool ipi_prediction;
 	uint64_t bias;
 	struct cpuidle_driver *drv;
 	struct lpm_cluster *parent;
@@ -96,19 +78,6 @@ struct lpm_cluster_level {
 	bool is_reset;
 };
 
-struct cluster_history {
-	uint32_t resi[MAXSAMPLES];
-	int mode[MAXSAMPLES];
-	int64_t stime[MAXSAMPLES];
-	uint32_t hptr;
-	uint32_t hinvalid;
-	uint32_t htmr_wkup;
-	uint64_t entry_time;
-	int entry_idx;
-	int nsamp;
-	int flag;
-};
-
 struct lpm_cluster {
 	struct list_head list;
 	struct list_head child;
@@ -119,8 +88,6 @@ struct lpm_cluster {
 	int min_child_level;
 	int default_level;
 	int last_level;
-	uint32_t tmr_add;
-	bool lpm_prediction;
 	struct list_head cpu;
 	spinlock_t sync_lock;
 	struct cpumask child_cpus;
@@ -129,7 +96,6 @@ struct lpm_cluster {
 	struct lpm_stats *stats;
 	unsigned int psci_mode_shift;
 	unsigned int psci_mode_mask;
-	struct cluster_history history;
 	struct hrtimer histtimer;
 };
 
@@ -144,6 +110,5 @@ int lpm_cpu_mode_allow(unsigned int cpu,
 bool lpm_cluster_mode_allow(struct lpm_cluster *cluster,
 		unsigned int mode, bool from_idle);
 uint32_t *get_per_cpu_max_residency(int cpu);
-uint32_t *get_per_cpu_min_residency(int cpu);
 extern struct lpm_cluster *lpm_root_node;
 #endif /* __LPM_LEVELS_H__ */
