@@ -281,6 +281,10 @@ struct dsi_panel {
 	enum dsi_doze_mode_type doze_mode_active;
 	enum dsi_doze_mode_type doze_mode_requested;
 	bool aod_nolp_command_enabled;
+
+#ifdef CONFIG_DRM_SDE_EXPO
+	bool dimlayer_exposure;
+#endif
 };
 
 static inline bool dsi_panel_ulps_feature_enabled(struct dsi_panel *panel)
