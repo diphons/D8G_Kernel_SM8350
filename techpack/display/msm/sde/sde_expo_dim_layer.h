@@ -19,7 +19,7 @@
 #define SDE_EXPO_DIM_LAYER_H
 
 #define DIM_THRES_LEVEL 440
-#define BACKLIGHT_DIM_SCALE 6
+#define BACKLIGHT_DIM_SCALE 1
 
 enum {
 	BRIGHTNESS = 0,
@@ -27,26 +27,29 @@ enum {
 	LUT_MAX,
 };
 
-static const uint8_t brightness_alpha_lut[][LUT_MAX] = {
+static const uint16_t brightness_alpha_lut[][LUT_MAX] = {
 /* {brightness, alpha} */
 	{0, 0xFF},
-	{2, 0xE0},
-	{3, 0xD5},
-	{4, 0xD3},
-	{5, 0xD0},
-	{6, 0xCE},
-	{7, 0xCB},
-	{8, 0xC8},
-	{9, 0xC4},
-	{10, 0xBA},
-	{12, 0xB0},
-	{15, 0xA0},
-	{20, 0x8B},
-	{30, 0x72},
-	{32, 0x5A},
-	{45, 0x38},
-	{60, 0x0E},
-	{78, 0x00}
+	{1, 0xF2},
+	{4, 0xE6},
+	{9, 0xD9},
+	{18, 0xCC},
+	{29, 0xBF},
+	{43, 0xB3},
+	{60, 0xA6},
+	{81, 0x99},
+	{106, 0x8C},
+	{132, 0x80},
+	{163, 0x73},
+	{198, 0x66},
+	{237, 0x59},
+	{277, 0x4D},
+	{323, 0x40},
+	{373, 0x33},
+	{428, 0x26},
+	{481, 0x1A},
+	{544, 0xD},
+	{610, 0x0}
 };
 
 uint32_t expo_map_dim_level(uint32_t level, struct dsi_display *display);
