@@ -67,6 +67,12 @@ config MIUI_OPTIMIZATIONS
 	bool "MIUI optimizations"
 	depends on MACH_XIAOMI
 
+config PERF_HUMANTASK
+	bool "enable feature humantask"
+	depends on MACH_XIAOMI
+	depends on MIUI_OPTIMIZATIONS
+	help
+	  support switch on/off of sched humantask.
 
 endif # if ANDROID
 
