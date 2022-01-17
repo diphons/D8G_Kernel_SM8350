@@ -53,7 +53,8 @@ static int ion_dma_buf_attach(struct dma_buf *dmabuf,
 {
 	struct ion_dma_buf_attachment *a;
 	struct sg_table *table;
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (heap->buf_ops.attach)
@@ -87,7 +88,8 @@ static void ion_dma_buf_detatch(struct dma_buf *dmabuf,
 				struct dma_buf_attachment *attachment)
 {
 	struct ion_dma_buf_attachment *a = attachment->priv;
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (heap->buf_ops.detach)
@@ -104,7 +106,8 @@ static void ion_dma_buf_detatch(struct dma_buf *dmabuf,
 static struct sg_table *ion_map_dma_buf(struct dma_buf_attachment *attachment,
 					enum dma_data_direction direction)
 {
-	struct ion_buffer *buffer = attachment->dmabuf->priv;
+	struct ion_buffer *buffer = container_of(attachment->dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	struct ion_dma_buf_attachment *a;
 	struct sg_table *table;
@@ -132,7 +135,8 @@ static void ion_unmap_dma_buf(struct dma_buf_attachment *attachment,
 			      struct sg_table *table,
 			      enum dma_data_direction direction)
 {
-	struct ion_buffer *buffer = attachment->dmabuf->priv;
+	struct ion_buffer *buffer = container_of(attachment->dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	struct ion_dma_buf_attachment *a = attachment->priv;
 	unsigned long attrs = attachment->dma_map_attrs;
@@ -152,7 +156,8 @@ static void ion_unmap_dma_buf(struct dma_buf_attachment *attachment,
 
 static void ion_dma_buf_release(struct dma_buf *dmabuf)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 #ifdef CONFIG_MACH_XIAOMI
@@ -167,7 +172,8 @@ static void ion_dma_buf_release(struct dma_buf *dmabuf)
 static int ion_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
 					enum dma_data_direction direction)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	struct ion_dma_buf_attachment *a;
 
@@ -195,7 +201,8 @@ ion_dma_buf_begin_cpu_access_partial(struct dma_buf *dmabuf,
 				     enum dma_data_direction direction,
 				     unsigned int offset, unsigned int len)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	/* This is done to make sure partial buffer cache flush / invalidate is
@@ -212,7 +219,8 @@ ion_dma_buf_begin_cpu_access_partial(struct dma_buf *dmabuf,
 static int ion_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
 				      enum dma_data_direction direction)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	struct ion_dma_buf_attachment *a;
 
@@ -240,7 +248,8 @@ static int ion_dma_buf_end_cpu_access_partial(struct dma_buf *dmabuf,
 					      unsigned int offset,
 					      unsigned int len)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	/* This is done to make sure partial buffer cache flush / invalidate is
@@ -256,7 +265,8 @@ static int ion_dma_buf_end_cpu_access_partial(struct dma_buf *dmabuf,
 
 static void *ion_dma_buf_map(struct dma_buf *dmabuf, unsigned long offset)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (heap->buf_ops.map)
@@ -267,7 +277,8 @@ static void *ion_dma_buf_map(struct dma_buf *dmabuf, unsigned long offset)
 
 static int ion_dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	int ret;
 
@@ -293,7 +304,8 @@ static int ion_dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
 static void ion_dma_buf_unmap(struct dma_buf *dmabuf, unsigned long offset,
 			      void *addr)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (!heap->buf_ops.unmap)
@@ -303,7 +315,8 @@ static void ion_dma_buf_unmap(struct dma_buf *dmabuf, unsigned long offset,
 
 static void *ion_dma_buf_vmap(struct dma_buf *dmabuf)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 	void *vaddr;
 
@@ -319,7 +332,8 @@ static void *ion_dma_buf_vmap(struct dma_buf *dmabuf)
 
 static void ion_dma_buf_vunmap(struct dma_buf *dmabuf, void *vaddr)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (heap->buf_ops.vunmap) {
@@ -334,7 +348,8 @@ static void ion_dma_buf_vunmap(struct dma_buf *dmabuf, void *vaddr)
 
 static int ion_dma_buf_get_flags(struct dma_buf *dmabuf, unsigned long *flags)
 {
-	struct ion_buffer *buffer = dmabuf->priv;
+	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
+						 iommu_data);
 	struct ion_heap *heap = buffer->heap;
 
 	if (!heap->buf_ops.get_flags)
@@ -433,7 +448,7 @@ struct dma_buf *ion_dmabuf_alloc_with_caller_pid(struct ion_device *dev, size_t 
 	exp_info.ops = &dma_buf_ops;
 	exp_info.size = buffer->size;
 	exp_info.flags = O_RDWR;
-	exp_info.priv = buffer;
+	exp_info.priv = &buffer->iommu_data;
 	exp_info.exp_name = kasprintf(GFP_KERNEL, "%s-%s-%d-%s-caller|%d-%s|",
 		KBUILD_MODNAME, buffer->heap->name, current->tgid, task_comm, pid_info,
 		p ? caller_task_comm : task_comm);
