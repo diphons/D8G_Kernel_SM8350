@@ -1381,6 +1381,9 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
 	spin_lock_init(&fi->i_size_lock);
 	INIT_LIST_HEAD(&fi->dirty_list);
 	INIT_LIST_HEAD(&fi->gdirty_list);
+#ifdef CONFIG_F2FS_CP_OPT
+	INIT_LIST_HEAD(&fi->xattr_dirty_list);
+#endif
 	init_f2fs_rwsem(&fi->i_gc_rwsem[READ]);
 	init_f2fs_rwsem(&fi->i_gc_rwsem[WRITE]);
 	init_f2fs_rwsem(&fi->i_mmap_sem);
@@ -1553,6 +1556,14 @@ static void f2fs_put_super(struct super_block *sb)
 
 	/* prevent remaining shrinker jobs */
 	mutex_lock(&sbi->umount_mutex);
+
+#ifdef CONFIG_MACH_XIAOMI
+	/*
+	 * flush all issued checkpoints and stop checkpoint issue thread.
+	 * after then, all checkpoints should be done by each process context.
+	 */
+	f2fs_stop_ckpt_thread(sbi);
+#endif
 
 	/*
 	 * flush all issued checkpoints and stop checkpoint issue thread.
@@ -2090,6 +2101,10 @@ static void default_options(struct f2fs_sb_info *sbi)
 	sbi->sb->s_flags |= SB_LAZYTIME;
 	if (!f2fs_is_readonly(sbi))
 		set_opt(sbi, FLUSH_MERGE);
+	set_opt(sbi, ATGC);
+#ifdef CONFIG_MACH_XIAOMI
+	set_opt(sbi, GC_MERGE);
+#endif
 	if (f2fs_hw_support_discard(sbi) || f2fs_hw_should_discard(sbi))
 		set_opt(sbi, DISCARD);
 	if (f2fs_sb_has_blkzoned(sbi)) {
@@ -2401,6 +2416,21 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
 		}
 		need_stop_ckpt = true;
 	}
+
+#ifdef CONFIG_MACH_XIAOMI
+	 if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
+			test_opt(sbi, MERGE_CHECKPOINT)) {
+		err = f2fs_start_ckpt_thread(sbi);
+		if (err) {
+			f2fs_err(sbi,
+				"Failed to start F2FS issue_checkpoint_thread (%d)",
+				err);
+			goto restore_gc;
+		}
+	} else {
+		 f2fs_stop_ckpt_thread(sbi);
+	}
+#endif
 
 	/*
 	 * We stop issue flush thread if FS is mounted as RO
@@ -4310,6 +4340,11 @@ try_onemore:
 	sbi->current_reserved_blocks = 0;
 	limit_reserve_root(sbi);
 	adjust_unusable_cap_perc(sbi);
+
+#ifdef CONFIG_F2FS_CP_OPT
+	INIT_LIST_HEAD(&sbi->xattr_set_dir_ilist);
+	spin_lock_init(&sbi->xattr_set_dir_ilist_lock);
+#endif
 
 	f2fs_init_extent_cache_info(sbi);
 
