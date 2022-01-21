@@ -1707,17 +1707,6 @@
 		spm-level = <3>;
 
 		status = "disabled";
-
-		qos0 {
-			mask = <0xf0>;
-			vote = <59>;
-		};
-
-		qos1 {
-			mask = <0x0f>;
-			vote = <65>;
-		};
-
 	};
 
 	sdhc_1: sdhci@7C4000 {
@@ -1790,16 +1779,6 @@
 		reset-names = "core_reset";
 
 		status = "disabled";
-
-		qos0 {
-			mask = <0x0f>;
-			vote = <61>;
-		};
-
-		qos1 {
-			mask = <0xf0>;
-			vote = <67>;
-		};
 	};
 
 	sdhc_2: sdhci@8804000 {
@@ -1850,16 +1829,6 @@
 		qcom,devfreq,freq-table = <50000000 202000000>;
 
 		status = "disabled";
-
-		qos0 {
-			mask = <0x0f>;
-			vote = <61>;
-		};
-
-		qos1 {
-			mask = <0xf0>;
-			vote = <67>;
-		};
 	};
 
 	apps_rsc: rsc@18200000 {
