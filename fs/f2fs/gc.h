@@ -10,7 +10,7 @@
 						 * whether IO subsystem is idle
 						 * or not
 						 */
-#define DEF_GC_THREAD_URGENT_SLEEP_TIME	500	/* 500 ms */
+#define DEF_GC_THREAD_URGENT_SLEEP_TIME	50	/* 50 ms */
 #ifndef CONFIG_MACH_XIAOMI
 #define DEF_GC_THREAD_MIN_SLEEP_TIME	30000	/* milliseconds */
 #else
