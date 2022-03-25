@@ -68,9 +68,6 @@ static void cluster_prepare(struct lpm_cluster *cluster,
 		const struct cpumask *cpu, int child_idx, bool from_idle,
 		int64_t time);
 
-static bool sleep_disabled;
-module_param_named(sleep_disabled, sleep_disabled, bool, 0664);
-
 #ifdef CONFIG_SMP
 static int lpm_cpu_qos_notify(struct notifier_block *nb,
 		unsigned long val, void *ptr);
@@ -270,24 +267,6 @@ static int lpm_starting_cpu(unsigned int cpu)
 }
 #endif
 
-static inline bool lpm_disallowed(s64 sleep_us, int cpu, struct lpm_cpu *pm_cpu)
-{
-	if (check_cpu_isolated(cpu))
-		goto out;
-
-	if (sleep_disabled || sleep_us < 0)
-		return true;
-
-	bias_time = sched_lpm_disallowed_time(cpu);
-	if (bias_time) {
-		pm_cpu->bias = bias_time;
-		return true;
-	}
-
-out:
-	return false;
-}
-
 static inline uint32_t get_cpus_qos(const struct cpumask *mask)
 {
 	int cpu;
@@ -303,50 +282,6 @@ static inline uint32_t get_cpus_qos(const struct cpumask *mask)
 	}
 
 	return latency;
-}
-
-static int cpu_power_select(struct cpuidle_device *dev,
-		struct lpm_cpu *cpu)
-{
-	ktime_t delta_next;
-	int best_level = 0;
-	uint32_t latency_us = get_cpus_qos(cpumask_of(dev->cpu));
-	s64 sleep_us = ktime_to_us(tick_nohz_get_sleep_length(&delta_next));
-	int i, idx_restrict;
-	uint32_t lvl_latency_us = 0;
-	uint32_t next_wakeup_us = (uint32_t)sleep_us;
-	uint32_t max_residency;
-	struct power_params *pwr_params;
-
-	if (lpm_disallowed(sleep_us, dev->cpu, cpu))
-		goto done_select;
-
-	idx_restrict = cpu->nlevels + 1;
-
-	for (i = 0; i < cpu->nlevels; i++) {
-		if (!lpm_cpu_mode_allow(dev->cpu, i, true))
-			continue;
-
-		pwr_params = &cpu->levels[i].pwr;
-		lvl_latency_us = pwr_params->exit_latency;
-		max_residency = pwr_params->max_residency;
-
-		if (latency_us <= lvl_latency_us)
-			break;
-
-		if (i >= idx_restrict)
-			break;
-
-		best_level = i;
-
-		if (next_wakeup_us <= max_residency)
-			break;
-	}
-
-done_select:
-	trace_cpu_power_select(best_level, sleep_us, latency_us, cpu->bias);
-
-	return best_level;
 }
 
 static unsigned int get_next_online_cpu(bool from_idle)
@@ -709,26 +644,18 @@ static int psci_enter_sleep(struct lpm_cpu *cpu, int idx, bool from_idle)
 static int lpm_cpuidle_select(struct cpuidle_driver *drv,
 		struct cpuidle_device *dev, bool *stop_tick)
 {
-	struct lpm_cpu *cpu = per_cpu(cpu_lpm, dev->cpu);
-
-	return cpu_power_select(dev, cpu);
+	return 0;
 }
 
 static int lpm_cpuidle_enter(struct cpuidle_device *dev,
 		struct cpuidle_driver *drv, int idx)
 {
-	struct lpm_cpu *cpu = per_cpu(cpu_lpm, dev->cpu);
 	bool success = false;
-	const struct cpumask *cpumask = get_cpu_mask(dev->cpu);
 	ktime_t start = ktime_get();
 	uint64_t start_time = ktime_to_ns(start), end_time;
-	int ret = -EBUSY;
 
 	/* Read the timer from the CPU that is entering idle */
 	per_cpu(next_hrtimer, dev->cpu) = tick_nohz_get_next_hrtimer();
-
-	cpu_prepare(cpu, idx, true);
-	cluster_prepare(cpu->parent, cpumask, idx, true, start_time);
 
 	lpm_stats_cpu_enter(idx, start_time);
 
@@ -738,8 +665,8 @@ static int lpm_cpuidle_enter(struct cpuidle_device *dev,
 	if (idx == cpu->nlevels - 1)
 		program_rimps_timer(cpu);
 
-	ret = psci_enter_sleep(cpu, idx, true);
-	success = (ret == 0);
+	cpu_do_idle();
+	success = true;
 
 exit:
 	if (idx == cpu->nlevels - 1)
@@ -747,8 +674,6 @@ exit:
 	end_time = ktime_to_ns(ktime_get());
 	lpm_stats_cpu_exit(idx, end_time, success);
 
-	cluster_unprepare(cpu->parent, cpumask, idx, true, end_time, success);
-	cpu_unprepare(cpu, idx, true);
 	return idx;
 }
 
@@ -1036,6 +961,9 @@ static int lpm_probe(struct platform_device *pdev)
 	 * core.  BUG in existing code but no known issues possibly because of
 	 * how late lpm_levels gets initialized.
 	 */
+	suspend_set_ops(&lpm_suspend_ops);
+	s2idle_set_ops(&lpm_s2idle_ops);
+
 	register_cluster_lpm_stats(lpm_root_node, NULL);
 
 	ret = cluster_cpuidle_register(lpm_root_node);
