@@ -665,7 +665,7 @@ static int lpm_cpuidle_enter(struct cpuidle_device *dev,
 	if (idx == cpu->nlevels - 1)
 		program_rimps_timer(cpu);
 
-	cpu_do_idle();
+	wfi();
 	success = true;
 
 exit:
