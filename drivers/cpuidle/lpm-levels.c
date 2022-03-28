@@ -650,29 +650,19 @@ static int lpm_cpuidle_select(struct cpuidle_driver *drv,
 static int lpm_cpuidle_enter(struct cpuidle_device *dev,
 		struct cpuidle_driver *drv, int idx)
 {
-	bool success = false;
-	ktime_t start = ktime_get();
-	uint64_t start_time = ktime_to_ns(start), end_time;
-
 	/* Read the timer from the CPU that is entering idle */
 	per_cpu(next_hrtimer, dev->cpu) = tick_nohz_get_next_hrtimer();
 
-	lpm_stats_cpu_enter(idx, start_time);
-
 	if (need_resched() || is_IPI_pending(cpumask_of(dev->cpu)))
-		goto exit;
+		return idx;
 
 	if (idx == cpu->nlevels - 1)
 		program_rimps_timer(cpu);
 
 	wfi();
-	success = true;
 
-exit:
 	if (idx == cpu->nlevels - 1)
 		disable_rimps_timer(cpu);
-	end_time = ktime_to_ns(ktime_get());
-	lpm_stats_cpu_exit(idx, end_time, success);
 
 	return idx;
 }
