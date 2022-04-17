@@ -653,17 +653,15 @@ static int lpm_cpuidle_enter(struct cpuidle_device *dev,
 	/* Read the timer from the CPU that is entering idle */
 	per_cpu(next_hrtimer, dev->cpu) = tick_nohz_get_next_hrtimer();
 
-	if (need_resched() || is_IPI_pending(cpumask_of(dev->cpu)))
-		return idx;
+	if (need_resched() || is_IPI_pending(cpumask_of(dev->cpu))) {
+		if (idx == cpu->nlevels - 1)
+			program_rimps_timer(cpu);
 
-	if (idx == cpu->nlevels - 1)
-		program_rimps_timer(cpu);
+		wfi();
 
-	wfi();
-
-	if (idx == cpu->nlevels - 1)
-		disable_rimps_timer(cpu);
-
+		if (idx == cpu->nlevels - 1)
+			disable_rimps_timer(cpu);
+	}
 	return idx;
 }
 
