@@ -3882,7 +3882,9 @@ static int gsi_set_inst_name(struct usb_function_instance *fi,
 	int prot_id, name_len;
 	struct f_gsi *gsi;
 	char gsi_inst_name[MAX_INST_NAME_LEN + sizeof("gsi.") + 1];
+#ifdef CONFIG_IPC_LOGGING
 	void *ipc_log_ctxt;
+#endif
 	struct gsi_opts *opts, *opts_prev;
 	struct usb_os_desc *descs[1];
 	char *names[1];
@@ -3938,6 +3940,7 @@ static int gsi_set_inst_name(struct usb_function_instance *fi,
 		return PTR_ERR(gsi);
 
 	opts->gsi = gsi;
+#ifdef CONFIG_IPC_LOGGING
 	/*
 	 * create instance name with prefixing "gsi." to differentiate
 	 * ipc log debugfs entry
@@ -3948,6 +3951,7 @@ static int gsi_set_inst_name(struct usb_function_instance *fi,
 		pr_err("%s: Err allocating ipc_log_ctxt for prot:%s\n",
 						__func__, gsi_inst_name);
 	opts->gsi->ipc_log_ctxt = ipc_log_ctxt;
+#endif
 
 	/* Set instance status */
 	mutex_lock(&inst_status[prot_id].gsi_lock);
@@ -3980,7 +3984,9 @@ static void gsi_free_inst(struct usb_function_instance *f)
 		return;
 	}
 
+#ifdef CONFIG_IPC_LOGGING
 	ipc_log_context_destroy(opts->gsi->ipc_log_ctxt);
+#endif
 	if (opts && opts->interf_group)
 		kfree(opts->interf_group);
 	/* Clear instance status */
