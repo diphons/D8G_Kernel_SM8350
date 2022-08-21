@@ -197,7 +197,7 @@ inode_set_iversion_queried(struct inode *inode, u64 val)
 static inline bool
 inode_maybe_inc_iversion(struct inode *inode, bool force)
 {
-	u64 cur, old, new;
+	u64 cur, new;
 
 	/*
 	 * The i_version field is not strictly ordered with any other inode
@@ -211,19 +211,14 @@ inode_maybe_inc_iversion(struct inode *inode, bool force)
 	 */
 	smp_mb();
 	cur = inode_peek_iversion_raw(inode);
-	for (;;) {
+	do {
 		/* If flag is clear then we needn't do anything */
 		if (!force && !(cur & I_VERSION_QUERIED))
 			return false;
 
 		/* Since lowest bit is flag, add 2 to avoid it */
 		new = (cur & ~I_VERSION_QUERIED) + I_VERSION_INCREMENT;
-
-		old = atomic64_cmpxchg(&inode->i_version, cur, new);
-		if (likely(old == cur))
-			break;
-		cur = old;
-	}
+	} while (!atomic64_try_cmpxchg(&inode->i_version, &cur, new));
 	return true;
 }
 
@@ -304,10 +299,10 @@ inode_peek_iversion(const struct inode *inode)
 static inline u64
 inode_query_iversion(struct inode *inode)
 {
-	u64 cur, old, new;
+	u64 cur, new;
 
 	cur = inode_peek_iversion_raw(inode);
-	for (;;) {
+	do {
 		/* If flag is already set, then no need to swap */
 		if (cur & I_VERSION_QUERIED) {
 			/*
@@ -320,11 +315,7 @@ inode_query_iversion(struct inode *inode)
 		}
 
 		new = cur | I_VERSION_QUERIED;
-		old = atomic64_cmpxchg(&inode->i_version, cur, new);
-		if (likely(old == cur))
-			break;
-		cur = old;
-	}
+	} while (!atomic64_try_cmpxchg(&inode->i_version, &cur, new));
 	return cur >> I_VERSION_QUERIED_SHIFT;
 }
 
