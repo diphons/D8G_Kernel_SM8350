@@ -449,6 +449,15 @@ static int help(struct sk_buff *skb, unsigned int protoff,
 				 &iph->saddr, ntohs(th->source),
 				 &iph->daddr, ntohs(th->dest));
 
+			/* we have at least
+                         * (21+MINMATCHLEN)-7-dccprotos[i].matchlen bytes valid
+                         * data left (== 14/13 bytes) */
+                        if (parse_dcc(data, data_limit, &dcc_ip,
+                                       &dcc_port, &addr_beg_p, &addr_end_p)) {
+                                pr_debug("unable to parse dcc command\n");
+                                continue;
+                        }
+
 			for (i = 0; i < ARRAY_SIZE(dccprotos); i++) {
 				if (memcmp(data, dccprotos[i],
 					   strlen(dccprotos[i]))) {
