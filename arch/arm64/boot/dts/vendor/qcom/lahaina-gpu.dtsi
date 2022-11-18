@@ -49,7 +49,7 @@
 
 		qcom,initial-pwrlevel = <5>;
 
-		qcom,no-nap;
+		//qcom,no-nap;
 
 		qcom,highest-bank-bit = <16>;
 
