@@ -143,13 +143,6 @@ static int fts_mode_handler(struct fts_ts_info *info, int force);
 static int fts_set_cur_value(int mode, int value);
 #endif
 extern int power_supply_is_system_supplied(void);
-#ifdef CONFIG_FTS_BOOST
-extern void touch_irq_boost(void);
-#endif
-#ifdef CONFIG_FTS_BOOST
-#define EVENT_INPUT 0x1
-extern void lpm_disable_for_dev(bool on, char event_dev);
-#endif
 #ifdef CONFIG_FTS_POWERSUPPLY_CB
 static int fts_write_charge_status(int status);
 #endif
@@ -183,9 +176,6 @@ void release_all_touches(struct fts_ts_info *info)
 	input_report_key(info->input_dev, BTN_INFO, 0);
 	update_fod_press_status(0);
 	input_sync(info->input_dev);
-#endif
-#ifdef CONFIG_FTS_BOOST
-	lpm_disable_for_dev(false, EVENT_INPUT);
 #endif
 	info->touch_id = 0;
 	info->touch_skip = 0;
@@ -4111,9 +4101,6 @@ static void fts_leave_pointer_event_handler(struct fts_ts_info *info,
 		input_report_key(info->input_dev, BTN_TOUCH, touch_condition);
 		if (!touch_condition)
 			input_report_key(info->input_dev, BTN_TOOL_FINGER, 0);
-#ifdef CONFIG_FTS_BOOST
-		lpm_disable_for_dev(false, EVENT_INPUT);
-#endif
 
 		info->fod_pressed = false;
 		input_report_key(info->input_dev, BTN_INFO, 0);
@@ -4787,9 +4774,6 @@ static void fts_ts_sleep_work(struct work_struct *work)
 			logError(1, "%s pm_resume_completion timeout, i2c is closed", tag);
 			pm_relax(info->dev);
 			fts_enableInterrupt();
-#ifdef CONFIG_FTS_BOOST
-			lpm_disable_for_dev(false, EVENT_INPUT);
-#endif
 			return;
 		} else {
 			logError(1, "%s pm_resume_completion be completed, handling irq", tag);
@@ -4844,9 +4828,6 @@ static void fts_ts_sleep_work(struct work_struct *work)
 #endif
 	pm_relax(info->dev);
 	fts_enableInterrupt();
-#ifdef CONFIG_FTS_BOOST
-	lpm_disable_for_dev(false, EVENT_INPUT);
-#endif
 
 	return;
 }
@@ -4870,9 +4851,6 @@ static irqreturn_t fts_event_handler(int irq, void *ts_info)
 	static char pre_id[3];
 	event_dispatch_handler_t event_handler;
 
-#ifdef CONFIG_FTS_BOOST
-	touch_irq_boost();
-#endif
 	if (info->tp_pm_suspend) {
 		logError(1, "%s device in suspend, schedue to work", tag);
 		pm_wakeup_event(info->dev, 0);
@@ -4887,9 +4865,6 @@ static irqreturn_t fts_event_handler(int irq, void *ts_info)
 	if (!fts_secure_filter_interrupt(info)) {
 		return IRQ_HANDLED;
 	}
-#endif
-#ifdef CONFIG_FTS_BOOST
-	lpm_disable_for_dev(true, EVENT_INPUT);
 #endif
 	pm_stay_awake(info->dev);
 #ifdef TOUCH_THP_SUPPORT
@@ -4961,10 +4936,6 @@ end:
 		} else if (!info->touch_id)
 			info->clicktouch_count = info->clicktouch_num;
 	}
-#ifdef CONFIG_FTS_BOOST
-	if (!info->touch_id)
-		lpm_disable_for_dev(false, EVENT_INPUT);
-#endif
 #ifdef FTS_XIAOMI_TOUCHFEATURE
 	wake_up(&info->wait_queue);
 #endif
@@ -6439,11 +6410,12 @@ static int fts_set_cur_value(int mode, int value)
 		xiaomi_touch_interfaces.touch_mode[mode][GET_CUR_VALUE] = value;
 		return fts_set_fod_status(value);
 	}
-	if (mode == Touch_Aod_Enable && fts_info && value >= 0)
-		return fts_set_aod_status(value);
+	if (mode == Touch_Aod_Enable && fts_info && value >= 0) {
+		fts_info->aod_status = value;
+		return 0;
+	}
 	if (mode == Touch_Doubletap_Mode && fts_info && value >= 0) {
 		fts_info->gesture_enabled = value;
-		schedule_work(&fts_info->switch_mode_work);
 		return 0;
 	}
 	if (mode == Touch_FodIcon_Enable && fts_info && value >= 0)
@@ -6878,9 +6850,6 @@ static void fts_suspend_work(struct work_struct *work)
 #else
 	if (info->gesture_enabled || fts_need_enter_lp_mode())
 		fts_enableInterrupt();
-#endif
-#ifdef CONFIG_FTS_BOOST
-	lpm_disable_for_dev(false, EVENT_INPUT);
 #endif
 	xiaomi_touch_set_suspend_state(XIAOMI_TOUCH_SUSPEND);
 }
