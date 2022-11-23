@@ -290,7 +290,7 @@
 &dsi_k3s_42_02_0a_dsc_cmd {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_k3s>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
-	qcom,mdss-dsi-bl-min-level = <2>;
+	qcom,mdss-dsi-bl-min-level = <8>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
 	qcom,mdss-brightness-max-level = <4095>;
 	qcom,mdss-brightness-init-level = <100>;
@@ -301,7 +301,7 @@
 &dsi_k3s_42_02_0b_dsc_cmd {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_k3s_second>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
-	qcom,mdss-dsi-bl-min-level = <2>;
+	qcom,mdss-dsi-bl-min-level = <8>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
 	qcom,mdss-brightness-init-level = <100>;
 	qcom,mdss-brightness-max-level = <4095>;
