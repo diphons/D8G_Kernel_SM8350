@@ -1,0 +1,4 @@
+config CAM_RECLAIM
+	bool "reclaim pages under camera condition"
+	default y
+	depends on MIUI_OPTIMIZATIONS
