@@ -69,3 +69,4 @@ obj-$(CONFIG_MI_HARDWARE_ID)	+= hwid.o
 obj-$(CONFIG_ISPV2_AL6021)	+= al6021/
 obj-$(CONFIG_HAPTIC_NV_L)	+= haptic_nv/
 obj-$(CONFIG_MMHARDWARE_OTHER_DETECTION) += mmhardware_others.o
+obj-$(CONFIG_PERF_HELPER)	+= perf_helper.o
