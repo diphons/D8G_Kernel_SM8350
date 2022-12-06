@@ -1,0 +1,4 @@
+config MI_RECLAIM
+	bool "reclaim pages"
+	default y
+	depends on MIUI_OPTIMIZATIONS
