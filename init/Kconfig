@@ -1109,6 +1109,13 @@ config SOCK_CGROUP_DATA
 
 endif # CGROUPS
 
+config PERF_CRITICAL_RT_TASK
+	bool "enable set rt binder thread" if EXPERT
+	depends on MIUI_OPTIMIZATIONS
+	default y
+	help
+	  speedui feature set BlastBufferQueue binder thread FIFO.
+
 menuconfig NAMESPACES
 	bool "Namespaces support" if EXPERT
 	depends on MULTIUSER
