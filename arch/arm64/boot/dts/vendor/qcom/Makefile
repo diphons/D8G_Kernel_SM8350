@@ -1,3 +1,106 @@
+ifeq ($(CONFIG_MACH_XIAOMI),y)
+ifeq ($(CONFIG_MACH_XIAOMI_SM8350),y)
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+
+ifeq ($(CONFIG_MACH_XIAOMI_CETUS),y)
+dtbo-$(CONFIG_MACH_XIAOMI_CETUS) +=\
+	cetus-sm8350-overlay.dtbo
+cetus-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_HAYDN),y)
+dtbo-$(CONFIG_MACH_XIAOMI_HAYDN +=\
+	haydn-sm8350-overlay.dtbo
+haydn-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_MARS),y)
+dtbo-$(CONFIG_MACH_XIAOMI_MARS) +=\
+	mars-sm8350-overlay.dtbo \
+	star-sm8350-overlay.dtbo
+mars-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+star-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_STAR),y)
+dtbo-$(CONFIG_MACH_XIAOMI_STAR) +=\
+	mars-sm8350-overlay.dtbo \
+	star-sm8350-overlay.dtbo
+mars-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+star-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_ODIN),y)
+dtbo-$(CONFIG_MACH_XIAOMI_ODIN) +=\
+	odin-sm8350-overlay.dtbo
+odin-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_VENUS),y)
+dtbo-$(CONFIG_MACH_XIAOMI_VENUS) +=\
+	venus-sm8350-overlay.dtbo
+venus-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_VILI),y)
+dtbo-$(CONFIG_MACH_XIAOMI_VILI) +=\
+	vili-sm8350-overlay.dtbo
+vili-sm8350-overlay.dtbo-base := lahaina.dtb lahaina-v2.dtb lahaina-v2.1.dtb
+endif
+
+endif
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_SM7350),y)
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+
+ifeq ($(CONFIG_MACH_XIAOMI_RENOIR),y)
+dtbo-$(CONFIG_MACH_XIAOMI_RENOIR) +=\
+	renoir-sm7350-overlay.dtbo
+renoir-sm7350-overlay.dtbo-base := shima.dtb
+endif
+
+endif
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_SM7325),y)
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+
+ifeq ($(CONFIG_MACH_XIAOMI_LISA),y)
+dtbo-$(CONFIG_MACH_XIAOMI_LISA) +=\
+	lisa-sm7325-overlay.dtbo
+lisa-sm7325-overlay.dtbo-base := yupik.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_MONA),y)
+dtbo-$(CONFIG_MACH_XIAOMI_MONA) +=\
+	mona-sm7325-overlay.dtbo
+mona-sm7325-overlay.dtbo-base := yupik.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_TAOYAO),y)
+dtbo-$(CONFIG_MACH_XIAOMI_TAOYAO) +=\
+	taoyao-sm7325-overlay.dtbo
+taoyao-sm7325-overlay.dtbo-base := yupik.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_ZIJIN),y)
+dtbo-$(CONFIG_MACH_XIAOMI_ZIJIN) +=\
+	zijin-sm7325-overlay.dtbo
+zijin-sm7325-overlay.dtbo-base := yupik.dtb
+endif
+
+ifeq ($(CONFIG_MACH_XIAOMI_REDWOOD),y)
+dtbo-$(CONFIG_MACH_XIAOMI_REDWOOD) +=\
+	zijin-sm7325-overlay.dtbo
+zijin-sm7325-overlay.dtbo-base := yupik.dtb
+endif
+
+endif
+endif
+
+else
+
 ifneq ($(CONFIG_ARCH_QTI_VM), y)
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 dtbo-$(CONFIG_ARCH_LAHAINA) += lahaina-rumi-overlay.dtbo \
