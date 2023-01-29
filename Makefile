@@ -741,14 +741,14 @@ KBUILD_CFLAGS   += $(call cc-disable-warning, format)
 ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
 KBUILD_CFLAGS += -O2
 else ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3
-KBUILD_CFLAGS += -O3
+KBUILD_CFLAGS += -O3 -ffp-contract=fast
 else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS += -Os
 endif
 
 ifdef CONFIG_CC_IS_CLANG
-KBUILD_CFLAGS += -mcpu=cortex-a55
-KBUILD_AFLAGS += -mcpu=cortex-a55
+KBUILD_CFLAGS += -mcpu=cortex-a78+crypto+crc
+KBUILD_AFLAGS += -mcpu=cortex-a78+crypto+crc
 ifdef CONFIG_LLVM_POLLY
 KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-ast-use-context \
@@ -764,8 +764,8 @@ KBUILD_CFLAGS	+= -mllvm -polly-run-dce
 endif
 endif
 else
-KBUILD_CFLAGS += -mcpu=cortex-a76.cortex-a55
-KBUILD_AFLAGS += -mcpu=cortex-a76.cortex-a55
+KBUILD_CFLAGS += -mcpu=cortex-a78.cortex-a55+crypto+crc
+KBUILD_AFLAGS += -mcpu=cortex-a78.cortex-a55+crypto+crc
 endif
 
 # Tell gcc to never replace conditional load with a non-conditional one
