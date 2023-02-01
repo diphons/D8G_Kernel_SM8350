@@ -819,7 +819,15 @@ static void binder_transaction_priority(struct binder_thread *thread,
 	t->set_priority_called = true;
 
 	if (!node->inherit_rt && is_rt_policy(desired.sched_policy)) {
-		desired.prio = NICE_TO_PRIO(0);
+               #ifdef CONFIG_MIUI_OPTIMIZATIONS
+               // MIUI MOD:
+               // We boost some app process to FIFO, but binder out thread
+               // from fifo has low priority, so we modify priority higher.
+               // desired.prio = NICE_TO_PRIO(0);
+               desired.prio = NICE_TO_PRIO(-10);
+               #else
+                desired.prio = NICE_TO_PRIO(0);
+               #endif
 		desired.sched_policy = SCHED_NORMAL;
 	}
 
