@@ -539,18 +539,21 @@ config MMHARDWARE_OTHER_DETECTION
 config PERF_HELPER
 	tristate "Record perflock messages"
 	default n
+	depends on MIUI_OPTIMIZATIONS
 	help
 	  this module support record perf lock history and other perf messages.
 
 config GPIO_TESTING_MODE
 	tristate "A simple GPIO testing mode driver"
 	default n
+	depends on MIUI_OPTIMIZATIONS
 	help
 	  Enable driver for a simple testing mode detection.
 
 config BOOTUP_RECLAIM
         bool "bootup reclaim"
         default n
+        depends on MIUI_OPTIMIZATIONS
         help
           reclaim global memory when bootup
 
