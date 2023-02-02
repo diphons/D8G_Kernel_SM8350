@@ -1768,26 +1768,13 @@ static int dsi_panel_parse_phy_props(struct dsi_panel *panel)
 	struct dsi_parser_utils *utils = &panel->utils;
 	const char *name = panel->name;
 
-	rc = utils->read_u32(utils->data,
-		  "qcom,mdss-pan-physical-width-dimension", &val);
-	if (rc) {
-		DSI_DEBUG("[%s] Physical panel width is not defined\n", name);
-		props->panel_width_mm = 0;
-		rc = 0;
-	} else {
-		props->panel_width_mm = val;
-	}
-
-	rc = utils->read_u32(utils->data,
-				  "qcom,mdss-pan-physical-height-dimension",
-				  &val);
-	if (rc) {
-		DSI_DEBUG("[%s] Physical panel height is not defined\n", name);
-		props->panel_height_mm = 0;
-		rc = 0;
-	} else {
-		props->panel_height_mm = val;
-	}
+	#ifdef CONFIG_MIUI_OPTIMIZATIONS
+		props->panel_width_mm = 695;
+		props->panel_height_mm = 1545;
+	#else
+		props->panel_width_mm = 70;
+		props->panel_height_mm = 154;
+	#endif
 
 	str = utils->get_property(utils->data,
 			"qcom,mdss-dsi-panel-orientation", NULL);
