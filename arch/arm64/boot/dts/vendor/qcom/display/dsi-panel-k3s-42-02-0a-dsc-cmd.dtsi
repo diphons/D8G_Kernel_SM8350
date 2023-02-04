@@ -252,7 +252,8 @@
 	mi,aod-hbm-51-index = <8>;
 	mi,aod-lbm-51-index = <8>;
 	mi,panel-aod-to-off-command-need-enabled;
-
+	mi,panel-hbm-backlight-threshold = <4095>;
+	
 	mi,mdss-dsi-panel-dc-type = <0>;
 	mi,dc-update-flag;
 	mi,dc-on-60hz-d2-index = <10>;
