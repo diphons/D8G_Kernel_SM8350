@@ -63,7 +63,7 @@
 
 #define PRE_SAVED_METHOD
 
-/*#define FW_H_FILE*/
+#define FW_H_FILE
 #define FTS_FW_UPDATE
 #define FW_UPDATE_ON_PROBE
 #ifdef FW_H_FILE
