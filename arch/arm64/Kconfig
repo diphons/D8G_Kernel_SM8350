@@ -1566,6 +1566,7 @@ config ARM64_AMU_EXTN
 	  indicating that the counter is not enabled.
 
 config AS_HAS_ARMV8_4
+	default n
 	def_bool $(cc-option,-Wa$(comma)-march=armv8.4-a)
 
 config ARM64_TLB_RANGE
@@ -1584,6 +1585,7 @@ endmenu
 menu "ARMv8.5 architectural features"
 
 config AS_HAS_ARMV8_5
+	default n
 	def_bool $(cc-option,-Wa$(comma)-march=armv8.5-a)
 
 config ARCH_RANDOM
