@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 5.4.230 Kernel Configuration
+# Linux/arm64 5.4.231 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="WeebX clang version 17.0.0 (https://github.com/llvm/llvm-project e8231eaa154396c5ff3c29314cdca8f2e0118200)"
 CONFIG_GCC_VERSION=0
@@ -2805,7 +2805,7 @@ CONFIG_BQ_FUEL_GAUGE=y
 # CONFIG_AI_RSOC_L9 is not set
 CONFIG_BQ2597X=y
 # CONFIG_MI_WIRELESS is not set
-CONFIG_BQ_FG_1S=y
+# CONFIG_BQ_FG_1S is not set
 # CONFIG_CHARGER_ISP1704 is not set
 # CONFIG_CHARGER_MAX8903 is not set
 # CONFIG_CHARGER_LP8727 is not set
