@@ -2601,14 +2601,11 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 	panel->bl_config.bl_scale = MAX_BL_SCALE_LEVEL;
 	panel->bl_config.bl_scale_sv = MAX_SV_BL_SCALE_LEVEL;
 
-	rc = utils->read_u32(utils->data, "qcom,mdss-dsi-bl-min-level", &val);
-	if (rc) {
-		DSI_DEBUG("[%s] bl-min-level unspecified, defaulting to zero\n",
-			 panel->name);
-		panel->bl_config.bl_min_level = 0;
-	} else {
-		panel->bl_config.bl_min_level = val;
-	}
+	#ifdef CONFIG_MIUI_OPTIMIZATIONS
+		panel->bl_config.bl_min_level = 2;
+	#else
+		panel->bl_config.bl_min_level = 8;
+	#endif
 
 #ifdef CONFIG_FACTORY_BUILD
 	rc = utils->read_u32(utils->data, "qcom,mdss-dsi-factory-bl-max-level", &val);
