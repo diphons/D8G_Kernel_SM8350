@@ -140,7 +140,7 @@ static int mi_sde_get_fod_hbm_target_brightness(struct dsi_display *display)
 
 	return target;
 }
-
+#if MI_DISP_DEBUGFS_ENABLE
 int mi_sde_connector_debugfs_esd_sw_trigger(void *display)
 {
 	struct dsi_display *dsi_display = (struct dsi_display *)display;
@@ -195,7 +195,7 @@ int mi_sde_connector_debugfs_esd_sw_trigger(void *display)
 
 	return 0;
 }
-
+#endif
 int mi_sde_connector_panel_ctl(struct drm_connector *connector, uint32_t op_code, bool is_lhbm_ioctl)
 {
 	int ret = 0;
