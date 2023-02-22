@@ -792,7 +792,7 @@ static void write_orphan_inodes(struct f2fs_sb_info *sbi, block_t start_blk)
 	 */
 	head = &im->ino_list;
 
-	/* loop for each orphan inode entry and write them in Jornal block */
+	/* loop for each orphan inode entry and write them in journal block */
 	list_for_each_entry(orphan, head, list) {
 		if (!page) {
 			page = f2fs_grab_meta_page(sbi, start_blk++);
@@ -1122,7 +1122,7 @@ retry:
 	} else {
 		/*
 		 * We should submit bio, since it exists several
-		 * wribacking dentry pages in the freeing inode.
+		 * writebacking dentry pages in the freeing inode.
 		 */
 		f2fs_submit_merged_write(sbi, DATA);
 		cond_resched();
@@ -1479,7 +1479,7 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
 		struct curseg_info *curseg = CURSEG_I(sbi, i + CURSEG_HOT_DATA);
 
-		ckpt->cur_data_segno[i] = cpu_to_le32(curseg->segno);;
+		ckpt->cur_data_segno[i] = cpu_to_le32(curseg->segno);
 		ckpt->cur_data_blkoff[i] = cpu_to_le16(curseg->next_blkoff);
 		ckpt->alloc_type[i + CURSEG_HOT_DATA] = curseg->alloc_type;
 	}
