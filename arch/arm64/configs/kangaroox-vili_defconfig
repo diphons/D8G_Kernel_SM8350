@@ -1,8 +1,8 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 5.4.231 Kernel Configuration
+# Linux/arm64 5.4.233 Kernel Configuration
 #
-CONFIG_CC_VERSION_TEXT="WeebX clang version 17.0.0 (https://github.com/llvm/llvm-project e8231eaa154396c5ff3c29314cdca8f2e0118200)"
+CONFIG_CC_VERSION_TEXT="WeebX clang version 17.0.0 (https://github.com/llvm/llvm-project d604c57164ecdb3084c8d00f9575158fddc30f81)"
 CONFIG_GCC_VERSION=0
 CONFIG_CC_IS_CLANG=y
 CONFIG_LD_IS_LLD=y
@@ -5937,6 +5937,9 @@ CONFIG_F2FS_FS_SECURITY=y
 # CONFIG_F2FS_IOSTAT is not set
 CONFIG_F2FS_UNFAIR_RWSEM=y
 CONFIG_F2FS_CP_OPT=y
+CONFIG_F2FS_REPORT_FAKE_KERNEL_VERSION=y
+CONFIG_F2FS_FAKE_KERNEL_RELEASE="5.4.147-qgki-g369674717ad3"
+CONFIG_F2FS_FAKE_KERNEL_VERSION="#1 SMP PREEMPT Fri Feb 3 18:59:37 CST 2023"
 # CONFIG_FS_DAX is not set
 CONFIG_FS_POSIX_ACL=y
 CONFIG_EXPORTFS=y
