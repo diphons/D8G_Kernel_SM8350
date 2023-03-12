@@ -65,7 +65,7 @@
 				qcom,mdss-dsi-v-bottom-border = <0>;
 				qcom,mdss-dsi-panel-clockrate = <1100000000>;
 				qcom,mdss-dsi-panel-jitter = <0x5 0x1>;
-				qcom,mdss-mdp-transfer-time-us = <14000>;
+				qcom,mdss-mdp-transfer-time-us = <7000>;
 				qcom,mdss-dsi-on-command = [
 					/* ESD */
 					39 01 00 00 00 00 06 F0 55 AA 52 08 00
@@ -115,7 +115,7 @@
 					/* Frame Rate 60Hz */
 					39 01 00 00 09 00 02 2F 01
 				];
-				qcom,mdss-dsi-timing-switch-command-state = "dsi_lp_mode";
+				qcom,mdss-dsi-timing-switch-command-state = "dsi_hs_mode";
 
 				qcom,mdss-dsi-nolp-command = [
 					39 01 00 00 00 00 05 51 00 00 00 00
@@ -210,7 +210,7 @@
 					/* Frame Rate 120Hz */
 					39 01 00 00 11 00 02 2F 02
 				];
-				qcom,mdss-dsi-timing-switch-command-state = "dsi_lp_mode";
+				qcom,mdss-dsi-timing-switch-command-state = "dsi_hs_mode";
 
 				qcom,mdss-dsi-nolp-command = [
 					39 01 00 00 00 00 05 51 00 00 00 00
