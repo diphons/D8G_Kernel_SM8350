@@ -1116,6 +1116,7 @@ static void attach_default_qdiscs(struct net_device *dev)
 			qdisc->ops->attach(qdisc);
 		}
 	}
+	qdisc = rtnl_dereference(dev->qdisc);
 
 #ifdef CONFIG_NET_SCHED
 	if (qdisc != &noop_qdisc)
@@ -1313,15 +1314,6 @@ static int qdisc_change_tx_queue_len(struct net_device *dev,
 	if (ops->change_tx_queue_len)
 		return ops->change_tx_queue_len(qdisc, dev->tx_queue_len);
 	return 0;
-}
-
-void dev_qdisc_change_real_num_tx(struct net_device *dev,
-				  unsigned int new_real_tx)
-{
-	struct Qdisc *qdisc = rtnl_dereference(dev->qdisc);
-
-	if (qdisc->ops->change_real_num_tx)
-		qdisc->ops->change_real_num_tx(qdisc, new_real_tx);
 }
 
 int dev_qdisc_change_tx_queue_len(struct net_device *dev)
