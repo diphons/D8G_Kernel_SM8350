@@ -1025,14 +1025,9 @@ static int __init dynamic_debug_init(void)
 	int n = 0, entries = 0, modct = 0;
 	int verbose_bytes = 0;
 
-	if (__start___verbose == __stop___verbose) {
-		if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
-			pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
-			return 1;
-		}
-		pr_info("Ignore empty _ddebug table in a CONFIG_DYNAMIC_DEBUG_CORE build\n");
-		ddebug_init_success = 1;
-		return 0;
+	if (&__start___verbose == &__stop___verbose) {
+		pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
+		return 1;
 	}
 	iter = __start___verbose;
 	modname = iter->modname;
