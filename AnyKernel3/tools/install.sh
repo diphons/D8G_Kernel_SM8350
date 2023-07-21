@@ -91,6 +91,33 @@ fi
 ui_print " ";
 ui_print " ";
 
+dtbo_aosp=$home/kernel/dtbo_aosp.img
+dtbo_stock=$home/kernel/dtbo.img
+if [ -f $dtbo_aosp ]; then
+ui_print " "
+ui_print "Choose Vendor Rom installed.."
+ui_print " "
+ui_print "MIUI or AOSP ?"
+ui_print " "
+ui_print "   Vol+ = Yes, Vol- = No"
+ui_print ""
+ui_print "   Yes.. MIUI"
+ui_print "   No!!... AOSP"
+ui_print " "
+if $FUNCTION; then
+	ui_print "-> MIUI selected.."
+	install_os="  -> ROM : MIUI"
+	cp $dtbo_stock $home/dtbo.img
+else
+	ui_print "-> AOSP selected.."
+	install_os="  -> ROM : AOSP"
+	cp $dtbo_aosp $home/dtbo.img
+fi
+else
+	cp $dtbo_stock $home/dtbo.img
+	install_os=""
+fi;
+
 if [ -f $home/kernel/dtb/dtb ]; then
 	dir_dtb=$home/kernel/dtb
 else
@@ -286,18 +313,24 @@ fi;
 if [ $patch_build = 0 ]; then
 	install_av="  -> Android : Not Detected"
 else
-	if ! grep -q 'ro.system.build.version.sdk=33' $patch_build; then
-		if ! grep -q 'ro.system.build.version.sdk=32' $patch_build; then
-			if ! grep -q 'ro.system.build.version.sdk=31' $patch_build; then
-				install_av="  -> Android : 11"
+	if ! grep -q 'ro.system.build.version.sdk=35' $patch_build; then
+		if ! grep -q 'ro.system.build.version.sdk=34' $patch_build; then
+			if ! grep -q 'ro.system.build.version.sdk=33' $patch_build; then
+				if ! grep -q 'ro.system.build.version.sdk=32' $patch_build; then
+					if ! grep -q 'ro.system.build.version.sdk=31' $patch_build; then
+						install_av="  -> Android : 11"
+					else
+						install_av="  -> Android : 12"
+					fi
+				else
+					install_av="  -> Android : 12.1"
+				fi
 			else
-				install_av="  -> Android : 12"
-			fi
+				install_av="  -> Android : 13"
 		else
-			install_av="  -> Android : 12.1"
-		fi
+			install_av="  -> Android : 13.1"
 	else
-			install_av="  -> Android : 13"
+		install_av="  -> Android : 14"
 	fi
 fi
 
@@ -307,6 +340,7 @@ echo "Install DKM" >> $D8G_DIR/idkm;
 ui_print " "
 ui_print "Installing D8G Kernel with :"
 ui_print "$install_pk"
+ui_print "$install_os"
 ui_print "$install_av"
 ui_print "$install_dtb"
 

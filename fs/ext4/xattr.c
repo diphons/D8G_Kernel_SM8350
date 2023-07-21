@@ -2608,13 +2608,8 @@ static int ext4_xattr_move_to_block(handle_t *handle, struct inode *inode,
 
 out:
 	kfree(b_entry_name);
-<<<<<<< HEAD
-	if (entry->e_value_inum && buffer)
-		kfree(buffer);
-=======
 	if (needs_kvfree && buffer)
 		kvfree(buffer);
->>>>>>> beabb62de8011f607d4aec4c70a6c45e2b2bec58
 	if (is)
 		brelse(is->iloc.bh);
 	if (bs)
