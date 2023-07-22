@@ -26,11 +26,7 @@
 /*
  * Timeout for stopping processes
  */
-#ifndef CONFIG_MACH_XIAOMI
-unsigned int __read_mostly freeze_timeout_msecs = 20 * MSEC_PER_SEC;
-#else
-unsigned int __read_mostly freeze_timeout_msecs = 5 * MSEC_PER_SEC;
-#endif
+unsigned int __read_mostly freeze_timeout_msecs = 2 * MSEC_PER_SEC;
 
 static int try_to_freeze_tasks(bool user_only)
 {
