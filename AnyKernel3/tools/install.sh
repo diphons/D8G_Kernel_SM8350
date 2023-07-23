@@ -329,8 +329,10 @@ else
 				fi
 			else
 				install_av="  -> Android : 13"
+			fi
 		else
 			install_av="  -> Android : 13.1"
+		fi
 	else
 		install_av="  -> Android : 14"
 	fi
