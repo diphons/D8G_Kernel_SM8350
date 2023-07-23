@@ -1768,13 +1768,26 @@ static int dsi_panel_parse_phy_props(struct dsi_panel *panel)
 	struct dsi_parser_utils *utils = &panel->utils;
 	const char *name = panel->name;
 
-	#ifdef CONFIG_MIUI_OPTIMIZATIONS
-		props->panel_width_mm = 695;
-		props->panel_height_mm = 1545;
-	#else
-		props->panel_width_mm = 70;
-		props->panel_height_mm = 154;
-	#endif
+	rc = utils->read_u32(utils->data,
+		  "qcom,mdss-pan-physical-width-dimension", &val);
+	if (rc) {
+		DSI_DEBUG("[%s] Physical panel width is not defined\n", name);
+		props->panel_width_mm = 0;
+		rc = 0;
+	} else {
+		props->panel_width_mm = val;
+	}
+
+	rc = utils->read_u32(utils->data,
+				  "qcom,mdss-pan-physical-height-dimension",
+				  &val);
+	if (rc) {
+		DSI_DEBUG("[%s] Physical panel height is not defined\n", name);
+		props->panel_height_mm = 0;
+		rc = 0;
+	} else {
+		props->panel_height_mm = val;
+	}
 
 	str = utils->get_property(utils->data,
 			"qcom,mdss-dsi-panel-orientation", NULL);
@@ -2601,11 +2614,14 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 	panel->bl_config.bl_scale = MAX_BL_SCALE_LEVEL;
 	panel->bl_config.bl_scale_sv = MAX_SV_BL_SCALE_LEVEL;
 
-	#ifdef CONFIG_MIUI_OPTIMIZATIONS
-		panel->bl_config.bl_min_level = 2;
-	#else
-		panel->bl_config.bl_min_level = 8;
-	#endif
+	rc = utils->read_u32(utils->data, "qcom,mdss-dsi-bl-min-level", &val);
+	if (rc) {
+		DSI_DEBUG("[%s] bl-min-level unspecified, defaulting to zero\n",
+			 panel->name);
+		panel->bl_config.bl_min_level = 0;
+	} else {
+		panel->bl_config.bl_min_level = val;
+	}
 
 #ifdef CONFIG_FACTORY_BUILD
 	rc = utils->read_u32(utils->data, "qcom,mdss-dsi-factory-bl-max-level", &val);
