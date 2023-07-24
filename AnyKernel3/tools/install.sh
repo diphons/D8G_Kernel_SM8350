@@ -91,8 +91,14 @@ fi
 ui_print " ";
 ui_print " ";
 
-dtbo_aosp=$home/kernel/dtbo_aosp.img
-dtbo_stock=$home/kernel/dtbo.img
+if [ -d $home/kernel ]; then
+	dir_kn=$home/kernel
+else
+	dir_kn=/tmp/anykernel/kernel
+fi
+
+dtbo_aosp=$dir_kn/dtbo_aosp.img
+dtbo_stock=$dir_kn/dtbo.img
 if [ -f $dtbo_aosp ]; then
 ui_print " "
 ui_print "Choose Vendor Rom installed.."
@@ -118,11 +124,7 @@ else
 	install_os=""
 fi;
 
-if [ -f $home/kernel/dtb/dtb ]; then
-	dir_dtb=$home/kernel/dtb
-else
-	dir_dtb=/tmp/anykernel/kernel/dtb
-fi
+dir_dtb=$dir_kn/dtb
 dtb_image=$dir_dtb/dtb
 dtb_image_oc=$dir_dtb/dtb_oc
 dtb_image_v=$dir_dtb/dtb_v
@@ -327,8 +329,10 @@ else
 				fi
 			else
 				install_av="  -> Android : 13"
+			fi
 		else
 			install_av="  -> Android : 13.1"
+		fi
 	else
 		install_av="  -> Android : 14"
 	fi
