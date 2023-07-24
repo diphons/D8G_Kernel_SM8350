@@ -130,6 +130,11 @@ dtb_image_oc=$dir_dtb/dtb_oc
 dtb_image_v=$dir_dtb/dtb_v
 dtb_image_voc=$dir_dtb/dtb_ocv
 
+if [ -f $dir_dtb ]; then
+	ui_print "-> Include DTB with Stock GPU selected.."
+	install_dtb="  -> Included DTB with Stock GPU..."
+	cp $dir_dtb $home/dtb
+else
 if [ -f $dtb_image_oc ]; then
 	ui_print " "
 	ui_print "Choose GPU to install.."
@@ -220,10 +225,13 @@ else
 			cp $dtb_image $home/dtb
 		fi
 	else
-		ui_print "-> Include DTB with Stock GPU selected.."
-		install_dtb="  -> Included DTB with Stock GPU..."
-		cp $dtb_image $home/dtb
+		if [ -f $dtb_image ]; then
+			ui_print "-> Include DTB with Stock GPU selected.."
+			install_dtb="  -> Included DTB with Stock GPU..."
+			cp $dtb_image $home/dtb
+		fi
 	fi
+fi
 fi
 
 # Choose Permissive or Enforcing
