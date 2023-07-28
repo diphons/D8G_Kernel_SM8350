@@ -32,7 +32,7 @@ obj-$(CONFIG_IR_NUVOTON) += nuvoton-cir.o
 obj-$(CONFIG_IR_ENE) += ene_ir.o
 obj-$(CONFIG_IR_REDRAT3) += redrat3.o
 obj-$(CONFIG_IR_RX51) += ir-rx51.o
-ifdef CONFIG_MACH_XIAOMI
+ifdef CONFIG_BOARD_XIAOMI
 obj-$(CONFIG_IR_SPI) += xiaomi/
 else
 obj-$(CONFIG_IR_SPI) += ir-spi.o
