@@ -1299,10 +1299,6 @@ typedef enum {
     WMITLV_TAG_STRUC_wmi_xgap_enable_cmd_fixed_param,
     WMITLV_TAG_STRUC_wmi_xgap_enable_complete_event_fixed_param,
     WMITLV_TAG_STRUC_wmi_pdev_mesh_rx_filter_enable_fixed_param,
-    WMITLV_TAG_STRUC_wmi_wfa_config_ofdma,
-    WMITLV_TAG_STRUC_wmi_livedump_request_cmd_fixed_param,
-    WMITLV_TAG_STRUC_wmi_livedump_response_event_fixed_param,
-    WMITLV_TAG_STRUC_wmi_prb_resp_tmpl_ml_info,
     WMITLV_TAG_STRUC_wmi_mlo_link_removal_tbtt_count,
     WMITLV_TAG_STRUC_wmi_mlo_link_removal_tbtt_update,
     WMITLV_TAG_STRUC_wmi_mlo_link_removal_evt_fixed_param,
@@ -1838,7 +1834,6 @@ typedef enum {
     OP(WMI_VDEV_PARAM_ENABLE_SR_PROHIBIT_CMDID) \
     OP(WMI_XGAP_ENABLE_CMDID) \
     OP(WMI_PDEV_MESH_RX_FILTER_ENABLE_CMDID) \
-    OP(WMI_ODD_LIVEDUMP_REQUEST_CMDID) \
     OP(WMI_MLO_LINK_REMOVAL_CMDID) \
     OP(WMI_MLO_AP_VDEV_TID_TO_LINK_MAP_CMDID) \
     OP(WMI_VDEV_SET_TWT_EDCA_PARAMS_CMDID) \
@@ -2137,7 +2132,6 @@ typedef enum {
     OP(WMI_IPA_LINK_STATS_EVENTID) \
     OP(WMI_PDEV_SCHED_TIDQ_SUSP_INFO_EVENTID) \
     OP(WMI_XGAP_ENABLE_COMPLETE_EVENTID) \
-    OP(WMI_ODD_LIVEDUMP_RESPONSE_EVENTID) \
     OP(WMI_MLO_LINK_REMOVAL_EVENTID) \
     OP(WMI_MLO_AP_VDEV_TID_TO_LINK_MAP_EVENTID) \
     OP(WMI_TAS_POWER_HISTORY_EVENTID) \
@@ -7080,11 +7074,6 @@ WMITLV_CREATE_PARAM_STRUC(WMI_HEALTH_MON_INIT_DONE_EVENTID);
 #define WMITLV_TABLE_WMI_XGAP_ENABLE_COMPLETE_EVENTID(id,op,buf,len) \
     WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_xgap_enable_complete_event_fixed_param, wmi_xgap_enable_complete_event_fixed_param, fixed_param, WMITLV_SIZE_FIX)
 WMITLV_CREATE_PARAM_STRUC(WMI_XGAP_ENABLE_COMPLETE_EVENTID);
-
-/* ODD Livedump */
-#define  WMITLV_TABLE_WMI_ODD_LIVEDUMP_RESPONSE_EVENTID(id,op,buf,len) \
-    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_livedump_response_event_fixed_param, wmi_livedump_response_event_fixed_param, fixed_param, WMITLV_SIZE_FIX)
-WMITLV_CREATE_PARAM_STRUC(WMI_ODD_LIVEDUMP_RESPONSE_EVENTID);
 
 #define WMITLV_TABLE_WMI_MLO_LINK_REMOVAL_CMDID(id,op,buf,len) \
     WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_mlo_link_removal_cmd_fixed_param, wmi_mlo_link_removal_cmd_fixed_param, fixed_param, WMITLV_SIZE_FIX) \
