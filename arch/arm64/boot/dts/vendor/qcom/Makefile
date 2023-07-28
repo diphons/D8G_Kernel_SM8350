@@ -1,3 +1,4 @@
+ifeq ($(CONFIG_BOARD_XIAOMI),y)
 ifeq ($(CONFIG_BOARD_XIAOMI_LAHAINA),y)
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 
@@ -83,6 +84,8 @@ endif
 
 endif
 endif
+
+else
 
 ifneq ($(CONFIG_ARCH_QTI_VM), y)
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
@@ -598,6 +601,7 @@ dtb-$(CONFIG_ARCH_DIREWOLF) += direwolf-ivi-rumi.dtb \
 	direwolf-adas-adp-star.dtb
 endif
 endif
+
 always		:= $(dtb-y)
 subdir-y	:= $(dts-dirs)
 clean-files	:= *.dtb *.dtbo
