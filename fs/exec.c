@@ -1911,8 +1911,8 @@ static int __do_execve_file(int fd, struct filename *filename,
             zygote64_task = current;
 		else if (unlikely(!strncmp(filename->name, HWCOMPOSER_BIN_PREFIX,
 					   strlen(HWCOMPOSER_BIN_PREFIX)))) {
-			current->flags |= PF_PERF_CRITICAL;
-			set_cpus_allowed_ptr(current, cpu_perf_mask);
+			current->pc_flags |= PC_PRIME_AFFINE;
+			set_cpus_allowed_ptr(current, cpu_prime_mask);
 		} else if (unlikely(!strncmp(filename->name,
 					   SURFACEFLINGER_BIN_PREFIX,
 					   strlen(SURFACEFLINGER_BIN_PREFIX)))) {
