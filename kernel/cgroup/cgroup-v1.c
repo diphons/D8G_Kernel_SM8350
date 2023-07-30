@@ -16,6 +16,8 @@
 #include <linux/cgroupstats.h>
 #include <linux/fs_parser.h>
 #include <linux/cpu.h>
+#include <linux/binfmts.h>
+#include <linux/devfreq_boost.h>
 
 #include <trace/events/cgroup.h>
 #include <trace/hooks/cgroup.h>
@@ -531,6 +533,13 @@ static ssize_t __cgroup1_procs_write(struct kernfs_open_file *of,
 
 	ret = cgroup_attach_task(cgrp, task, threadgroup);
 	trace_android_vh_cgroup_set_task(ret, task);
+
+	/* This covers boosting for app launches and app transitions */
+    if (!ret && !threadgroup &&
+        !memcmp(of->kn->parent->name, "top-app", sizeof("top-app")) &&
+        task_is_zygote(task->parent)) {
+           devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 1000);
+    }
 
 out_finish:
 	cgroup_procs_write_finish(task, locked);
