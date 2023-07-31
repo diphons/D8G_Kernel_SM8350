@@ -91,16 +91,50 @@ fi
 ui_print " ";
 ui_print " ";
 
-if [ -f $home/kernel/dtb/dtb ]; then
-	dir_dtb=$home/kernel/dtb
+if [ -d $home/kernel ]; then
+	dir_kn=$home/kernel
 else
-	dir_dtb=/tmp/anykernel/kernel/dtb
+	dir_kn=/tmp/anykernel/kernel
 fi
+
+dtbo_aosp=$dir_kn/dtbo_aosp.img
+dtbo_stock=$dir_kn/dtbo.img
+if [ -f $dtbo_aosp ]; then
+ui_print " "
+ui_print "Choose Vendor Rom installed.."
+ui_print " "
+ui_print "MIUI or AOSP ?"
+ui_print " "
+ui_print "   Vol+ = Yes, Vol- = No"
+ui_print ""
+ui_print "   Yes.. MIUI"
+ui_print "   No!!... AOSP"
+ui_print " "
+if $FUNCTION; then
+	ui_print "-> MIUI selected.."
+	install_os="  -> ROM : MIUI"
+	cp $dtbo_stock $home/dtbo.img
+else
+	ui_print "-> AOSP selected.."
+	install_os="  -> ROM : AOSP"
+	cp $dtbo_aosp $home/dtbo.img
+fi
+else
+	cp $dtbo_stock $home/dtbo.img
+	install_os=""
+fi;
+
+dir_dtb=$dir_kn/dtb
 dtb_image=$dir_dtb/dtb
 dtb_image_oc=$dir_dtb/dtb_oc
 dtb_image_v=$dir_dtb/dtb_v
 dtb_image_voc=$dir_dtb/dtb_ocv
 
+if [ -f $dir_dtb ]; then
+	ui_print "-> Include DTB with Stock GPU selected.."
+	install_dtb="  -> Included DTB with Stock GPU..."
+	cp $dir_dtb $home/dtb
+else
 if [ -f $dtb_image_oc ]; then
 	ui_print " "
 	ui_print "Choose GPU to install.."
@@ -191,10 +225,13 @@ else
 			cp $dtb_image $home/dtb
 		fi
 	else
-		ui_print "-> Include DTB with Stock GPU selected.."
-		install_dtb="  -> Included DTB with Stock GPU..."
-		cp $dtb_image $home/dtb
+		if [ -f $dtb_image ]; then
+			ui_print "-> Include DTB with Stock GPU selected.."
+			install_dtb="  -> Included DTB with Stock GPU..."
+			cp $dtb_image $home/dtb
+		fi
 	fi
+fi
 fi
 
 # Choose Permissive or Enforcing
@@ -286,18 +323,26 @@ fi;
 if [ $patch_build = 0 ]; then
 	install_av="  -> Android : Not Detected"
 else
-	if ! grep -q 'ro.system.build.version.sdk=33' $patch_build; then
-		if ! grep -q 'ro.system.build.version.sdk=32' $patch_build; then
-			if ! grep -q 'ro.system.build.version.sdk=31' $patch_build; then
-				install_av="  -> Android : 11"
+	if ! grep -q 'ro.system.build.version.sdk=35' $patch_build; then
+		if ! grep -q 'ro.system.build.version.sdk=34' $patch_build; then
+			if ! grep -q 'ro.system.build.version.sdk=33' $patch_build; then
+				if ! grep -q 'ro.system.build.version.sdk=32' $patch_build; then
+					if ! grep -q 'ro.system.build.version.sdk=31' $patch_build; then
+						install_av="  -> Android : 11"
+					else
+						install_av="  -> Android : 12"
+					fi
+				else
+					install_av="  -> Android : 12.1"
+				fi
 			else
-				install_av="  -> Android : 12"
+				install_av="  -> Android : 13"
 			fi
 		else
-			install_av="  -> Android : 12.1"
+			install_av="  -> Android : 13.1"
 		fi
 	else
-			install_av="  -> Android : 13"
+		install_av="  -> Android : 14"
 	fi
 fi
 
@@ -307,6 +352,7 @@ echo "Install DKM" >> $D8G_DIR/idkm;
 ui_print " "
 ui_print "Installing D8G Kernel with :"
 ui_print "$install_pk"
+ui_print "$install_os"
 ui_print "$install_av"
 ui_print "$install_dtb"
 
