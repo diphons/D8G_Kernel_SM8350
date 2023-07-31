@@ -501,5 +501,11 @@ config MACH_XIAOMI_REDWOOD
 	  This enables support for Redmi Note 12 Pro Speed.
 
 endif
+
+config D8G_SERVICE
+	bool "d8g helper"
+	help
+	  This enables support for D8G features.
+
 endmenu
 endmenu

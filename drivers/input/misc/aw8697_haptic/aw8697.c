@@ -31,6 +31,9 @@
 #include <linux/syscalls.h>
 #include <linux/power_supply.h>
 #include <linux/pm_qos.h>
+#ifdef CONFIG_D8G_SERVICE
+#include <misc/d8g_helper.h>
+#endif
 #include "aw8697_config.h"
 #include "aw8697_reg.h"
 #include "aw8697.h"
@@ -782,6 +785,41 @@ static int aw8697_haptic_set_bst_peak_cur(struct aw8697 *aw8697,
 	return 0;
 }
 
+#ifdef CONFIG_D8G_SERVICE
+static unsigned char haptic_set_level(int gain)
+{
+    int val = 128;
+	int max_val = 160;
+
+	/*
+	* Max level default is 255
+	* Guard max level of haptic
+	*/
+    if (max_val > 255)
+        max_val = 255;
+
+	// Set gain to use max_val
+	if (gain < max_val || gain > max_val)
+		gain = max_val;
+
+	// haptic_gain in percent
+	if (haptic_gain > 100 )
+		haptic_gain = 100;
+	if (haptic_gain < 20 )
+		haptic_gain = 20;
+
+	val = haptic_gain * gain / 100;
+
+    if (val > max_val)
+        val = max_val;
+	// don't change value on min level
+    if (val < 30)
+        val = 30;
+
+    return val;
+}
+#endif
+
 static int aw8697_haptic_set_gain(struct aw8697 *aw8697, unsigned char gain)
 {
 	int comp_gain = 0;
@@ -797,11 +835,19 @@ static int aw8697_haptic_set_gain(struct aw8697 *aw8697, unsigned char gain)
 		}
 		pr_info("%s: enable vbat comp, level = %x comp level = %x",
 			__func__, gain, comp_gain);
+#ifdef CONFIG_D8G_SERVICE
+		aw8697_i2c_write(aw8697, AW8697_REG_DATDBG, haptic_set_level(comp_gain));
+#else
 		aw8697_i2c_write(aw8697, AW8697_REG_DATDBG, comp_gain);
+#endif
 	} else {
 		pr_debug("%s: disable compsensation, vbat=%d, vbat_min=%d, vbat_ref=%d",
 			__func__, aw8697->vbat, AW8697_VBAT_MIN, AW8697_VBAT_REFER);
+#ifdef CONFIG_D8G_SERVICE
+		aw8697_i2c_write(aw8697, AW8697_REG_DATDBG, haptic_set_level(gain));
+#else
 		aw8697_i2c_write(aw8697, AW8697_REG_DATDBG, gain);
+#endif
 	}
 	return 0;
 }

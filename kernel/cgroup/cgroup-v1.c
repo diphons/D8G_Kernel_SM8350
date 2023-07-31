@@ -18,6 +18,9 @@
 #include <linux/cpu.h>
 #include <linux/binfmts.h>
 #include <linux/devfreq_boost.h>
+#ifdef CONFIG_D8G_SERVICE
+#include <misc/d8g_helper.h>
+#endif
 
 #include <trace/events/cgroup.h>
 #include <trace/hooks/cgroup.h>
@@ -535,11 +538,24 @@ static ssize_t __cgroup1_procs_write(struct kernfs_open_file *of,
 	trace_android_vh_cgroup_set_task(ret, task);
 
 	/* This covers boosting for app launches and app transitions */
-    if (!ret && !threadgroup &&
-        !memcmp(of->kn->parent->name, "top-app", sizeof("top-app")) &&
-        task_is_zygote(task->parent)) {
-           devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 1000);
+#ifdef CONFIG_D8G_SERVICE
+	if (!limited && oplus_panel_status == 2) {
+#endif
+		if (!ret && !threadgroup &&
+			!memcmp(of->kn->parent->name, "top-app", sizeof("top-app")) &&
+			task_is_zygote(task->parent)) {
+#ifdef CONFIG_D8G_SERVICE
+			if (oprofile == 4)
+                devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 100);
+			else if (oprofile == 0)
+                devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 250);
+			else
+#endif
+				devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 1000);
+		}
+#ifdef CONFIG_D8G_SERVICE
     }
+#endif
 
 out_finish:
 	cgroup_procs_write_finish(task, locked);

@@ -98,6 +98,9 @@
 #include <linux/scs.h>
 #include <linux/binfmts.h>
 #include <linux/devfreq_boost.h>
+#ifdef CONFIG_D8G_SERVICE
+#include <misc/d8g_helper.h>
+#endif
 
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -2388,9 +2391,20 @@ long _do_fork(struct kernel_clone_args *args)
 	int trace = 0;
 	long nr;
 
-	if (task_is_zygote(current)) {
-		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 50);
+#ifdef CONFIG_D8G_SERVICE
+	if (!limited && oplus_panel_status == 2) {
+#endif
+	    if (task_is_zygote(current)) {
+#ifdef CONFIG_D8G_SERVICE
+			if (oprofile == 1 || oprofile == 3 )
+				devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 50);
+			else if (oprofile != 4 )
+#endif
+				devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 50);
+		}
+#ifdef CONFIG_D8G_SERVICE
 	}
+#endif
 
 	/*
 	 * Determine whether and which event to report to ptracer.  When

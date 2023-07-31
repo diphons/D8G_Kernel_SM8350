@@ -29,6 +29,9 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/tick.h>
+#ifdef CONFIG_D8G_SERVICE
+#include <linux/hid_magic.h>
+#endif
 #include <linux/sched/sysctl.h>
 #include <trace/events/power.h>
 
@@ -2457,6 +2460,10 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
 	policy->max = new_data.max;
 	trace_cpu_frequency_limits(policy);
 
+#ifdef CONFIG_D8G_SERVICE
+	restrict_frequency(policy);
+#endif
+
 	arch_set_max_freq_scale(policy->cpus, policy->max);
 
 	policy->cached_target_freq = UINT_MAX;
@@ -2557,6 +2564,25 @@ void cpufreq_update_limits(unsigned int cpu)
 		cpufreq_update_policy(cpu);
 }
 EXPORT_SYMBOL_GPL(cpufreq_update_limits);
+
+#ifdef CONFIG_D8G_SERVICE
+int cpufreq_policy_reset_limit(void)
+{
+	struct cpufreq_policy *policy;
+	struct cpufreq_policy new_policy;
+	int ret;
+
+	for_each_policy(policy) {
+		memcpy(&new_policy, policy, sizeof(*policy));
+		new_policy.max = policy->cpuinfo.max_freq;
+		ret = cpufreq_set_policy(policy, NULL, new_policy.max);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+#endif
 
 /*********************************************************************
  *               BOOST						     *
