@@ -732,6 +732,8 @@ static int ucsi_dr_swap(struct typec_port *port, enum typec_data_role role)
 	command |= UCSI_SET_UOR_ROLE(role);
 	command |= UCSI_SET_UOR_ACCEPT_ROLE_SWAPS;
 	ret = ucsi_role_cmd(con, command);
+	reinit_completion(&con->complete);
+
 	if (ret < 0)
 		goto out_unlock;
 
@@ -770,11 +772,12 @@ static int ucsi_pr_swap(struct typec_port *port, enum typec_role role)
 
 	reinit_completion(&con->complete);
 
-	pr_info("num = %d\n", con->num);
 	command = UCSI_SET_PDR | UCSI_CONNECTOR_NUMBER(con->num);
 	command |= UCSI_SET_PDR_ROLE(role);
 	command |= UCSI_SET_PDR_ACCEPT_ROLE_SWAPS;
 	ret = ucsi_role_cmd(con, command);
+	reinit_completion(&con->complete);
+
 	if (ret < 0)
 		goto out_unlock;
 
