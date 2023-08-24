@@ -15,6 +15,9 @@
 #include <linux/qcom_scm.h>
 #include <asm/cacheflush.h>
 #include <linux/qtee_shmbridge.h>
+#ifdef CONFIG_D8G_SERVICE
+#include <misc/d8g_helper.h>
+#endif
 
 #include "../../devfreq/governor.h"
 #include "msm_adreno_devfreq.h"
@@ -412,7 +415,12 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 #if 1
 	// scale busy time up based on adrenoboost parameter, only if MIN_BUSY exceeded...
 	if ((unsigned int)(priv->bin.busy_time + stats->busy_time) >= MIN_BUSY) {
-		priv->bin.busy_time += stats->busy_time * (1 + (adrenoboost*3)/2);
+#ifdef CONFIG_D8G_SERVICE
+		if (limited)
+			priv->bin.busy_time += stats->busy_time;
+		else
+#endif
+			priv->bin.busy_time += stats->busy_time * (1 + (adrenoboost*3)/2);
 	} else {
 		priv->bin.busy_time += stats->busy_time;
 	}
