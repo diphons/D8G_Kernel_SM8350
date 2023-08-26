@@ -672,7 +672,7 @@ void readahead_expand(struct readahead_control *ractl,
 		page = radix_tree_lookup(&mapping->i_pages, index);
 		rcu_read_unlock();
 
-		if (page && !radix_tree_exceptional_entry(page))
+		if (page && !xa_is_value(page))
 			return; /* Page apparently present */
 
 		page = __page_cache_alloc(gfp_mask);
@@ -698,7 +698,7 @@ void readahead_expand(struct readahead_control *ractl,
 		page = radix_tree_lookup(&mapping->i_pages, index);
 		rcu_read_unlock();
 
-		if (page && !radix_tree_exceptional_entry(page))
+		if (page && !xa_is_value(page))
 			return; /* Page apparently present */
 
 		page = __page_cache_alloc(gfp_mask);
