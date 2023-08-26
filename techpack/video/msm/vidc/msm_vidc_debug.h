@@ -19,8 +19,6 @@
 // void disable_irq_nosync(unsigned int irq);
 // void enable_irq(unsigned int irq);
 
-void do_gettimeofday(struct timeval *__ddl_tv);
-
 #ifndef CONFIG_VIDEOBUF2_CORE
 int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req);
 int vb2_qbuf(struct vb2_queue *q, struct media_device *mdev,
